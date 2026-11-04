@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-11-04 (4)
+- Layout: text centered; visuals fill the whole screen behind it.
+- Dual-tone text (`index.html` `#inkBase` / `#inkOverlay`, `applyInk` in `script.js`): the same text is drawn twice and the opposite-colored copy is clipped to the visual's area, so text flips white/dark exactly at the visual's edge. Removed the text halo.
+- `specs.js`: `fx` renamed `glow` → `sunrise`, `liquid` → `charge`, `grid` → `pile`.
+- Peak Brightness `sunrise`: the sun rises from the horizon (higher level = higher sun); sky switches from night to day across the middle of the scale. Night: white text, dark inside the sun.
+- Battery `charge`: smooth charge-up with a soft upward light sweep (no waves or bubbles). White text on the filled part.
+- CPU Speed `speed`: fills the full screen; more streaks at higher level; each streak starts slow then snaps fast. White text and counter.
+- Display Size `frame`: deeper blue; white text inside the frame.
+- Thickness `slab`: horizontal white band on a night background narrows from full screen to a line (slimmer = thinner); dark text where it crosses.
+- Storage `pile`: assorted items (box, crate, slab, pill, ball) fall with gravity and a settle bounce, landing in the lowest spot, until the pile reaches the level. Fixed seed, so a higher level is the same pile with more on top.
+
 ## 2026-11-04 (3)
 - Restyled to the reference tone: light lavender-grey background with film grain; deep blue / blue / teal / lavender palette; navy text with no card behind it.
 - `specs.js`: added `fx` per spec; removed the thickness `note`.

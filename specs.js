@@ -3,13 +3,13 @@
 // When min > max, a lower value scores higher (e.g. thickness).
 // `fx` picks the animation in script.js.
 const SCALES = [
-  { key: 'brightness', label: 'Peak Brightness', unit: 'nits', min: 1000, max: 3000, decimals: 0, fx: 'glow' },
+  { key: 'brightness', label: 'Peak Brightness', unit: 'nits', min: 1000, max: 3000, decimals: 0, fx: 'sunrise' },
   { key: 'ram',        label: 'RAM',             unit: 'GB',   min: 4,    max: 16,   decimals: 0, fx: 'stack' },
-  { key: 'battery',    label: 'Battery',         unit: 'mAh',  min: 3000, max: 5000, decimals: 0, fx: 'liquid' },
+  { key: 'battery',    label: 'Battery',         unit: 'mAh',  min: 3000, max: 5000, decimals: 0, fx: 'charge' },
   { key: 'cpu',        label: 'CPU Speed',       unit: 'GHz',  min: 2.5,  max: 4.0,  decimals: 2, fx: 'speed' },
   { key: 'display',    label: 'Display Size',    unit: 'inch', min: 5.5,  max: 7.0,  decimals: 1, fx: 'frame' },
   { key: 'thickness',  label: 'Thickness',       unit: 'mm',   min: 8.5,  max: 6.5,  decimals: 1, fx: 'slab' },
-  { key: 'storage',    label: 'Storage',         unit: 'GB',   min: 64,   max: 512,  decimals: 0, fx: 'grid' },
+  { key: 'storage',    label: 'Storage',         unit: 'GB',   min: 64,   max: 512,  decimals: 0, fx: 'pile' },
 ];
 
 // `models` are model-code prefixes (regional suffixes like N, B, U are ignored).

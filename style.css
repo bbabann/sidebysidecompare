@@ -11,7 +11,6 @@
   --glass: rgba(255, 255, 255, 0.38);
   --glass-line: rgba(255, 255, 255, 0.7);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --stage: 72%; /* fx area below the text; height-based visuals scale within it */
 }
 
 * { box-sizing: border-box; margin: 0; }
@@ -60,7 +59,20 @@ html, body {
   text-align: center;
 }
 .screen[hidden] { display: none; }
-.screen--spec { justify-content: flex-start; gap: 8px; padding-top: calc(64px + env(safe-area-inset-top)); }
+.ink {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+.ink .eyebrow { color: inherit; opacity: 0.65; }
+[data-tone="dark"] { color: var(--ink); }
+[data-tone="light"] { color: var(--white); }
 
 
 .eyebrow {
@@ -87,8 +99,9 @@ html, body {
   top: calc(20px + env(safe-area-inset-top));
   left: 0;
   right: 0;
+  z-index: 1;
   font-size: 14px;
-  color: var(--ink-soft);
+  opacity: 0.65;
   font-variant-numeric: tabular-nums;
 }
 
@@ -130,24 +143,40 @@ html, body {
     radial-gradient(circle at 58% 36%, #fff 0 1px, transparent 1.5px);
 }
 
-/* ---------- FX: glow (brightness) ---------- */
-.fx-dusk {
+/* ---------- FX: sunrise (brightness) ---------- */
+.fx-sky {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, #8fb3c4, var(--blue) 55%, var(--blue-deep));
+  background: linear-gradient(to bottom, #0b1c3a, #1d3f70 55%, #4a6fa0);
 }
-.fx-glow {
+.fx-daylight {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(to bottom, #cfe3ec, #eef4f7 60%, #ffffff);
+  transition: opacity 2.6s var(--ease-out);
+}
+.fx-sun {
   position: absolute;
   left: 50%;
-  top: 68%;
-  width: var(--size);
+  top: 100%;
+  width: min(34vw, 200px);
   aspect-ratio: 1;
   border-radius: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  background: radial-gradient(circle, #fff 0 6%, rgba(255, 255, 255, 0.85) 16%, rgba(190, 224, 228, 0.5) 38%, rgba(140, 192, 196, 0) 70%);
-  transition: transform 2s var(--ease-out);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, #ffffff 55%, #f2f7fa);
+  box-shadow: 0 0 40px 12px rgba(255, 255, 255, 0.9), 0 0 140px 60px rgba(190, 224, 228, 0.6);
+  transition: top 2.6s var(--ease-out);
 }
-.fx-glow.is-on { transform: translate(-50%, -50%) scale(1); animation: shimmer 3s ease-in-out 2s infinite; }
+.fx-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12%;
+  border-top: 1px solid rgba(255, 255, 255, 0.9);
+  background: linear-gradient(to bottom, #3a4670, #1e2a4a);
+}
 
 /* ---------- FX: stack (RAM) ---------- */
 .fx-stack {
@@ -184,35 +213,27 @@ html, body {
   box-shadow: 0 -6px 30px rgba(255, 255, 255, 0.6);
 }
 
-/* ---------- FX: liquid (battery) ---------- */
-.fx-liquid {
+/* ---------- FX: charge (battery) ---------- */
+.fx-charge {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   height: 0;
-  background: linear-gradient(to top, var(--blue-deep), var(--blue) 55%, var(--teal));
-  transition: height 2s var(--ease-out);
+  overflow: hidden;
+  background: linear-gradient(to top, var(--blue-deep), var(--blue) 60%, var(--teal));
+  box-shadow: 0 -1px 0 var(--glass-line), 0 -10px 36px rgba(140, 192, 196, 0.55);
+  transition: height 2.6s cubic-bezier(0.45, 0, 0.25, 1);
 }
-.fx-liquid::before {
+/* Soft light that sweeps upward while charging */
+.fx-charge::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  top: -15px;
-  height: 16px;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 16'%3E%3Cpath d='M0 8 Q25 0 50 8 T100 8 T150 8 T200 8 V16 H0Z' fill='%238cc0c4'/%3E%3C/svg%3E") repeat-x;
-  background-size: 200px 16px;
-  animation: wave 3s linear infinite;
-}
-.fx-bubble {
-  position: absolute;
-  bottom: -12px;
-  width: var(--s);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.75);
-  animation: rise var(--d) linear var(--delay) infinite;
+  height: 40%;
+  background: linear-gradient(to top, transparent, rgba(255, 255, 255, 0.28), transparent);
+  animation: charge 2.8s ease-in-out infinite;
 }
 
 /* ---------- FX: speed (CPU) ---------- */
@@ -223,8 +244,7 @@ html, body {
   bottom: 0;
   height: 0;
   overflow: hidden;
-  background: linear-gradient(to top, var(--blue-deep), var(--blue) 70%, #6f9cc0);
-  box-shadow: 0 -1px 0 var(--glass-line), 0 -12px 40px rgba(140, 192, 196, 0.6);
+  background: linear-gradient(to top, #0e2650, var(--blue-deep) 60%, #2f5f98);
   transition: height 1.2s cubic-bezier(0.55, 0, 0.1, 1);
 }
 .fx-streak {
@@ -234,19 +254,20 @@ html, body {
   height: 2px;
   border-radius: 2px;
   background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.95));
-  animation: streak var(--d) linear var(--delay) infinite;
+  /* Starts slow, then snaps fast */
+  animation: streak var(--d) cubic-bezier(0.85, 0, 0.95, 0.25) var(--delay) infinite;
 }
 
 /* ---------- FX: frame (display size) ---------- */
 .fx-frame {
   position: absolute;
   left: 50%;
-  top: calc(100% - var(--stage) / 2);
+  top: 50%;
   width: 6%;
   height: 4%;
   transform: translate(-50%, -50%);
   border: 1px solid rgba(255, 255, 255, 0.95);
-  background: linear-gradient(150deg, rgba(140, 192, 196, 0.55), rgba(63, 116, 168, 0.75));
+  background: linear-gradient(150deg, var(--blue), var(--blue-deep));
   box-shadow: 0 20px 60px rgba(36, 80, 138, 0.3);
   transition: width 1.6s cubic-bezier(0.65, 0, 0.35, 1), height 1.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
@@ -264,50 +285,50 @@ html, body {
 .fx-handle:nth-child(4) { right: 0; bottom: 0; }
 
 /* ---------- FX: slab (thickness) ---------- */
+.fx-night {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, #0b1c3a, #16305a);
+}
 .fx-slab {
   position: absolute;
-  left: -15vw;
-  width: 130vw;
-  top: 66%;
-  height: 70vh;
-  transform: translateY(-50%) rotate(-14deg);
-  border-top: 1px solid rgba(255, 255, 255, 0.9);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
-  background: linear-gradient(to bottom, #a3a9cb, #6f779e 50%, #8a91b8);
-  box-shadow: 0 30px 60px rgba(30, 43, 69, 0.25);
+  left: 0;
+  width: 100%;
+  top: 50%;
+  height: 100%;
+  transform: translateY(-50%);
+  background: linear-gradient(to bottom, #ffffff, #dfe7f0);
+  box-shadow: 0 0 40px rgba(190, 224, 228, 0.6);
   transition: height 1.8s cubic-bezier(0.7, 0, 0.2, 1);
 }
 
-/* ---------- FX: grid (storage) ---------- */
-.fx-grid {
+/* ---------- FX: pile (storage) ---------- */
+.fx-pile {
   position: absolute;
-  left: 50%;
-  bottom: 5vh;
-  width: 88vw;
-  height: 58vh;
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 4px;
-  transform: translateX(-50%) perspective(900px) rotateX(24deg);
-  transform-origin: bottom;
+  left: 6vw;
+  right: 6vw;
+  bottom: 0;
+  height: 100%;
 }
-.fx-cell {
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.15);
-  transition: background 0.35s var(--delay), box-shadow 0.35s var(--delay);
+.fx-item {
+  position: absolute;
+  border: 1px solid var(--glass-line);
+  border-radius: 6px;
+  box-shadow: 0 6px 14px rgba(36, 80, 138, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.8);
 }
-.fx-cell.is-on {
-  background: linear-gradient(135deg, var(--teal), var(--blue));
-  box-shadow: 0 0 10px rgba(140, 192, 196, 0.8);
-}
+.fx-item--box   { background: linear-gradient(160deg, #ffffff, var(--lavender)); }
+.fx-item--crate { background: linear-gradient(160deg, var(--teal), var(--blue)); }
+.fx-item--slab  { background: linear-gradient(160deg, #c7cce4, #8b92c2); border-radius: 4px; }
+.fx-item--pill  { background: linear-gradient(160deg, #ffffff, var(--teal)); border-radius: 999px; }
+.fx-item--ball  { background: radial-gradient(circle at 32% 30%, #a9d6d9, var(--blue) 60%, var(--blue-deep)); border-radius: 50%; }
 
 /* ---------- Keyframes ---------- */
 @keyframes pulse { 50% { opacity: 0.4; } }
 @keyframes float { 50% { transform: translateY(-12px); } }
-@keyframes shimmer { 50% { opacity: 0.85; } }
-@keyframes wave { to { background-position-x: -200px; } }
-@keyframes rise { to { transform: translateY(-110vh); opacity: 0; } }
+@keyframes charge {
+  from { top: 100%; }
+  to { top: -40%; }
+}
 @keyframes streak {
   from { transform: translateX(-100%); }
   to { transform: translateX(110vw); }

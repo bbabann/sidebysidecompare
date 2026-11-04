@@ -22,9 +22,18 @@
     <!-- Spec -->
     <section class="screen screen--spec" id="spec" hidden>
       <p class="progress" id="progress"></p>
-      <p class="eyebrow" id="specDevice"></p>
-      <h2 class="label" id="specLabel"></h2>
-      <p class="value"><span id="specValue"></span><span class="unit" id="specUnit"></span></p>
+      <!-- Same text twice: the overlay copy is clipped to where the visual sits,
+           so text flips between dark and white exactly at the visual's edge. -->
+      <div class="ink" id="inkBase">
+        <p class="eyebrow js-device"></p>
+        <h2 class="label js-label"></h2>
+        <p class="value"><span class="js-value"></span><span class="unit js-unit"></span></p>
+      </div>
+      <div class="ink" id="inkOverlay" aria-hidden="true">
+        <p class="eyebrow js-device"></p>
+        <h2 class="label js-label"></h2>
+        <p class="value"><span class="js-value"></span><span class="unit js-unit"></span></p>
+      </div>
     </section>
 
     <!-- End -->
