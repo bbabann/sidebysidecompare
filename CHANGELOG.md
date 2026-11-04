@@ -13,7 +13,7 @@
   - Storage `grid` — perspective grid cells light up from the bottom.
 - Height-based visuals stay within the area below the text (`STAGE` / `--stage`, 72%).
 - `index.html`: added the fx layer and a floating glass orb on start / end screens.
-- Deployed to GitHub Pages.
+- Deployed to GitHub Pages; added `qr.png` pointing to the live URL.
 
 ## 2026-11-04 (2)
 - Replaced the image-compare scaffold with the device spec viewer.
