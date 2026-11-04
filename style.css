@@ -1,0 +1,91 @@
+:root {
+  --bg: #f6f6f4;
+  --surface: #ffffff;
+  --text: #1c1c1c;
+  --muted: #6b6b6b;
+  --line: #dcdcd8;
+  --accent: #2f5bea;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --surface: #1d1d1d;
+    --text: #ececec;
+    --muted: #9a9a9a;
+    --line: #333333;
+    --accent: #7c9bff;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.toolbar h1 { margin: 0; font-size: 18px; }
+.modes { display: flex; gap: 4px; }
+.mode {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+.mode.is-active { border-color: var(--accent); color: var(--accent); }
+
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 16px;
+}
+.pane { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.drop {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+  border: 2px dashed var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
+  cursor: pointer;
+}
+.drop.is-over { border-color: var(--accent); }
+.drop img { width: 100%; height: 100%; object-fit: contain; }
+.hint { color: var(--muted); }
+.caption { margin: 0; text-align: center; color: var(--muted); }
+.divider { display: none; }
+
+/* Slider mode: stack panes and clip B */
+.stage[data-mode="slider"] { grid-template-columns: 1fr; }
+.stage[data-mode="slider"] .pane { grid-area: 1 / 1; }
+.stage[data-mode="slider"] .pane[data-side="b"] {
+  clip-path: inset(0 0 0 var(--pos, 50%));
+}
+.stage[data-mode="slider"] .caption { display: none; }
+.stage[data-mode="slider"] .divider {
+  display: block;
+  grid-area: 1 / 1;
+  align-self: end;
+  width: 100%;
+  margin: 0 0 8px;
+  z-index: 1;
+}
+
+@media (max-width: 640px) {
+  .stage { grid-template-columns: 1fr; }
+  .drop { min-height: 40vh; }
+}

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Side by Side Compare</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="toolbar">
+    <h1>Side by Side Compare</h1>
+    <div class="modes" role="tablist" aria-label="View mode">
+      <button class="mode is-active" data-mode="split" role="tab" aria-selected="true">Side by side</button>
+      <button class="mode" data-mode="slider" role="tab" aria-selected="false">Slider</button>
+    </div>
+  </header>
+
+  <main id="stage" class="stage" data-mode="split">
+    <section class="pane" data-side="a">
+      <label class="drop">
+        <input type="file" accept="image/*" hidden>
+        <span class="hint">Drop or click to add image A</span>
+        <img alt="Image A" hidden>
+      </label>
+      <p class="caption">A</p>
+    </section>
+    <section class="pane" data-side="b">
+      <label class="drop">
+        <input type="file" accept="image/*" hidden>
+        <span class="hint">Drop or click to add image B</span>
+        <img alt="Image B" hidden>
+      </label>
+      <p class="caption">B</p>
+    </section>
+    <input id="divider" class="divider" type="range" min="0" max="100" value="50" aria-label="Compare position">
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
