@@ -1,12 +1,12 @@
 const $ = (id) => document.getElementById(id);
-const screens = ['start', 'spec', 'end', 'picker'];
+const screens = ['guide', 'spec', 'end', 'picker'];
 const fxRoot = $('fx');
 const inkBase = $('inkBase');
 const inkOverlay = $('inkOverlay');
 const HIDDEN = 'inset(100% 0 0 0)';
 
 let device = null;
-let step = -1; // -1 = start screen, SCALES.length = end screen
+let step = -1; // -1 = guide screen, SCALES.length = end screen
 
 const show = (name) => screens.forEach((s) => { $(s).hidden = s !== name; });
 
@@ -43,13 +43,16 @@ const el = (cls, parent, vars = {}) => {
 
 const setText = (cls, text) => document.querySelectorAll(cls).forEach((node) => { node.textContent = text; });
 
-// Text tone over each visual. `base` is the main text color ('dark' | 'light');
-// `clip` animates the opposite-colored copy so it covers exactly the visual's area.
-// `top` is the tone of the progress counter when it differs from `base`.
-const applyInk = ({ base = 'dark', clip, top } = {}) => {
+// Text tone over each visual. `base` is the main text color ('light' on the dark
+// theme, 'dark' over a bright visual); `clip` animates the opposite-colored copy
+// so it covers exactly the visual's area. `plain` drops the gradient numerals
+// where the visual behind the text is busy.
+const applyInk = ({ base = 'light', clip, plain = false } = {}) => {
   inkBase.dataset.tone = base;
+  inkBase.classList.toggle('is-plain', plain);
   inkOverlay.dataset.tone = base === 'dark' ? 'light' : 'dark';
-  $('progress').dataset.tone = top || base;
+  $('progress').dataset.tone = base;
+  $('close').dataset.tone = base;
   inkOverlay.style.transition = 'none';
   inkOverlay.style.clipPath = clip ? clip.from : HIDDEN;
   if (!clip) return;
@@ -88,7 +91,7 @@ const FX = {
     // Night sky: white text, dark text where the sun passes behind it.
     const r = 'min(17vw, 100px)';
     return {
-      base: 'light',
+      plain: true,
       clip: { from: `circle(${r} at 50% 100%)`, to: `circle(${r} at 50% ${top}%)`, timing: '2.6s cubic-bezier(0.22, 1, 0.36, 1)' },
     };
   },
@@ -132,7 +135,7 @@ const FX = {
       streak.style.top = `${rand(2, 98)}%`;
     }
     nextFrame(() => { band.style.height = '100%'; });
-    return { top: 'light', clip: { from: HIDDEN, to: 'inset(0 0 0 0)', timing: '1.2s cubic-bezier(0.55, 0, 0.1, 1)' } };
+    return {};
   },
 
   // Display size: a frame expands from the center; 100 fills the screen.
@@ -149,14 +152,13 @@ const FX = {
   },
 
   // Thickness: a white band on a night sky narrows to a line; slimmer = thinner.
-  // White text on the night, dark text where the band crosses it.
+  // Dark text where the band crosses the text.
   slab(root, level) {
     el('fx-night', root);
     const slab = el('fx-slab', root);
     const height = 2 + (1 - level / 100) * 24;
     nextFrame(() => { slab.style.height = `${height}vh`; });
     return {
-      base: 'light',
       clip: { from: 'inset(0 0 0 0)', to: `inset(${(100 - height) / 2}% 0)`, timing: '1.8s cubic-bezier(0.7, 0, 0.2, 1)' },
     };
   },
@@ -206,13 +208,23 @@ const FX = {
         { transform: 'translateY(0)' },
       ], { duration: 900, delay: i * 70, fill: 'backwards' });
     }
+    return { plain: true };
   },
 };
 
 const render = () => {
   fxRoot.innerHTML = '';
-  if (step < 0) return show('start');
-  if (step >= SCALES.length) return show('end');
+  $('close').hidden = step < 0;
+  if (step < 0) {
+    show('guide');
+    guideTrack.scrollLeft = 0;
+    setGuideDot(0);
+    return;
+  }
+  if (step >= SCALES.length) {
+    $('close').dataset.tone = 'light';
+    return show('end');
+  }
 
   const scale = SCALES[step];
   const value = device.specs[scale.key];
@@ -227,7 +239,7 @@ const render = () => {
 };
 
 const advance = () => {
-  if (!device) return;
+  if (!device || step < 0) return; // the guide has its own Start Compare button
   step = step >= SCALES.length ? -1 : step + 1;
   render();
 };
@@ -257,7 +269,6 @@ const detect = async () => {
 
 const start = (id) => {
   device = DEVICES[id];
-  $('deviceName').textContent = device.name;
   step = -1;
   render();
 };
@@ -267,6 +278,8 @@ const showPicker = () => {
   choices.innerHTML = '';
   Object.keys(DEVICES).forEach((id) => {
     const btn = document.createElement('button');
+    btn.className = 'pill';
+    btn.type = 'button';
     btn.textContent = DEVICES[id].name;
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -278,5 +291,35 @@ const showPicker = () => {
 };
 
 $('app').addEventListener('click', advance);
+
+// Guide: dots follow the swipe; Start Compare goes straight to the first spec.
+const guideTrack = $('guideTrack');
+const guideDots = [...$('guideDots').children];
+const setGuideDot = (index) => guideDots.forEach((dot, i) => {
+  dot.classList.toggle('is-active', i === index);
+  dot.setAttribute('aria-selected', i === index);
+});
+const goToSlide = (index) => guideTrack.scrollTo({ left: index * guideTrack.clientWidth, behavior: 'smooth' });
+guideTrack.addEventListener('scroll', () => setGuideDot(Math.round(guideTrack.scrollLeft / guideTrack.clientWidth)), { passive: true });
+guideDots.forEach((dot, i) => dot.addEventListener('click', (e) => {
+  e.stopPropagation();
+  goToSlide(i);
+}));
+document.addEventListener('keydown', (e) => {
+  if (step >= 0) return;
+  const index = Math.round(guideTrack.scrollLeft / guideTrack.clientWidth);
+  if (e.key === 'ArrowRight') goToSlide(Math.min(index + 1, guideDots.length - 1));
+  if (e.key === 'ArrowLeft') goToSlide(Math.max(index - 1, 0));
+});
+$('startCompare').addEventListener('click', (e) => {
+  e.stopPropagation();
+  step = 0;
+  render();
+});
+$('close').addEventListener('click', (e) => {
+  e.stopPropagation();
+  step = -1;
+  render();
+});
 
 detect().then((id) => (id ? start(id) : showPicker()));

@@ -1,15 +1,29 @@
+/* Visual style follows the Figma "Seowhan Ideation" feature screens (node 387:15261):
+   dark navy base, Samsung Sharp Sans titles, blue gradient numerals, glass + pill buttons. */
+/* Samsung Sharp Sans is not bundled (proprietary). Where it is installed locally,
+   map its Bold face explicitly; elsewhere the stack falls back to SamsungOne / system. */
+@font-face {
+  font-family: "Sharp Display";
+  src: local("SamsungSharpSans-Bold"), local("Samsung Sharp Sans Bold");
+  font-weight: 700;
+}
+
 :root {
-  --bg-top: #e7e9f0;
-  --bg-bottom: #c5c9db;
-  --ink: #1e2b45;
-  --ink-soft: rgba(30, 43, 69, 0.6);
+  --bg-top: #3a4160;
+  --bg-mid: #22263a;
+  --bg-bottom: #15171f;
+  --ink: #161a26;
   --white: #ffffff;
-  --blue-deep: #24508a;
-  --blue: #3f74a8;
-  --teal: #8cc0c4;
-  --lavender: #aab0d4;
-  --glass: rgba(255, 255, 255, 0.38);
-  --glass-line: rgba(255, 255, 255, 0.7);
+  --white-soft: rgba(255, 255, 255, 0.6);
+  --blue: #7794ff;
+  --blue-light: #aec4ff;
+  --blue-sky: #7aa8e0;
+  --grey-blue: #6f758c;
+  --navy: #2d3348;
+  --grad-blue: linear-gradient(159deg, var(--blue) 0%, var(--blue-light) 52%, var(--blue-sky) 100%);
+  --glass-line: rgba(255, 255, 255, 0.4);
+  --font-display: "Sharp Display", "SamsungOne", system-ui, -apple-system, sans-serif;
+  --font-body: "One UI Sans GUI", "One UI Sans", "SamsungOne", system-ui, -apple-system, sans-serif;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -18,9 +32,9 @@ html, body {
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
-  background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
-  color: var(--ink);
-  font-family: "SamsungOne", system-ui, -apple-system, sans-serif;
+  background: radial-gradient(120% 80% at 50% 0%, var(--bg-top), var(--bg-mid) 45%, var(--bg-bottom));
+  color: var(--white);
+  font-family: var(--font-body);
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 }
@@ -30,17 +44,6 @@ html, body {
   height: 100dvh;
   overflow: hidden;
   cursor: pointer;
-}
-/* Film grain, like the matte renders in the references */
-#app::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  opacity: 0.12;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 .fx { position: absolute; inset: 0; overflow: hidden; }
@@ -69,64 +72,191 @@ html, body {
   gap: 8px;
   padding: 24px;
   text-align: center;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
-.ink .eyebrow { color: inherit; opacity: 0.65; }
-[data-tone="dark"] { color: var(--ink); }
+[data-tone="dark"] { color: var(--ink); text-shadow: none; }
 [data-tone="light"] { color: var(--white); }
-
+/* Numerals: blue gradient on dark, solid ink on bright visuals,
+   solid white over busy visuals (`.is-plain`) */
+[data-tone="light"]:not(.is-plain) .value {
+  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)), var(--grad-blue);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
 .eyebrow {
-  font-size: 13px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.8;
 }
-.device { font-size: clamp(36px, 11vw, 64px); font-weight: 700; }
-.hint { margin-top: 24px; font-size: 16px; color: var(--ink-soft); animation: pulse 2s ease-in-out infinite; }
+.subtitle { font-size: 14px; font-weight: 500; color: var(--white-soft); }
+.device { font-family: var(--font-display); font-size: clamp(32px, 10vw, 56px); font-weight: 700; }
 
-.label { font-size: clamp(22px, 6.5vw, 36px); font-weight: 600; }
+.label { font-family: var(--font-display); font-size: clamp(24px, 6.5vw, 36px); font-weight: 700; }
 .value {
   margin-top: 4px;
+  font-family: var(--font-display);
   font-size: clamp(64px, 21vw, 144px);
-  font-weight: 800;
-  line-height: 1;
+  font-weight: 700;
+  line-height: 1.05;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
-.unit { font-size: 0.28em; font-weight: 600; margin-left: 0.15em; letter-spacing: 0; }
+.unit { font-size: 0.4em; margin-left: 0.08em; letter-spacing: 0; }
 .progress {
   position: absolute;
-  top: calc(20px + env(safe-area-inset-top));
+  top: calc(22px + env(safe-area-inset-top));
   left: 0;
   right: 0;
   z-index: 1;
-  font-size: 14px;
-  opacity: 0.65;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.6;
   font-variant-numeric: tabular-nums;
 }
 
-.choices { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; width: min(320px, 100%); }
-.choices button {
-  padding: 16px;
-  border: 1px solid var(--glass-line);
-  border-radius: 999px;
-  background: var(--glass);
-  color: var(--ink);
-  font: inherit;
-  font-size: 18px;
+/* ---------- Guide (Figma "Homescreen") ---------- */
+.screen--guide {
+  justify-content: flex-start;
+  gap: 0;
+  padding: clamp(64px, 14vh, 140px) 0 calc(40px + env(safe-area-inset-bottom));
+  background: linear-gradient(215deg, #eff9fc 25.5%, #dde8ff 79.2%);
+  color: #272931;
+}
+.guide-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 13.3vw, 56px);
+  font-weight: 700;
+  line-height: 1.25;
+  background: linear-gradient(180deg, #313855, #272931);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.guide-track {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.guide-track::-webkit-scrollbar { display: none; }
+.guide-slide {
+  flex: 0 0 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  scroll-snap-align: center;
+  min-height: 0;
+}
+.guide-art {
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 0;
+  padding: 24px 0;
+  container-type: size; /* lets the illustration scale to the height that is left */
+}
+/* Phone outline with the sun and horizon drawn over it; offsets are the Figma
+   positions inside the 210x316 phone box, as percentages so the box can scale. */
+.guide-phone-box { position: relative; height: min(316px, 100cqh); aspect-ratio: 210 / 316; }
+.guide-phone { width: 100%; height: 100%; object-fit: contain; }
+.guide-glow { position: absolute; left: 30.5%; top: 24.7%; width: 38.1%; animation: glow 3.2s ease-in-out infinite; }
+.guide-line { position: absolute; left: 24.3%; top: 74.7%; width: 50.5%; }
+.guide-hands { width: min(84vw, 303px); max-height: 100cqh; object-fit: contain; }
+.guide-caption {
+  min-height: 38px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  color: rgba(0, 0, 0, 0.6);
+  text-align: center;
+}
+.guide-dots { display: flex; gap: 8px; margin: 14px 0 32px; }
+.guide-dots button {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 1px solid #000;
+  border-radius: 50%;
+  background: transparent;
+  opacity: 0.35;
   cursor: pointer;
 }
-.choices button:active { background: var(--blue); color: var(--white); }
+.guide-dots button.is-active { background: #000; opacity: 1; }
+.btn-start {
+  width: 193px;
+  height: 48px;
+  border: 0;
+  border-radius: 40px;
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: var(--white);
+  font: 500 14px var(--font-body);
+  cursor: pointer;
+}
+.btn-start:active { background: rgba(0, 0, 0, 0.95); }
+
+/* Pill button (Figma "See what's upgraded") */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  margin-top: 28px;
+  padding: 0 14px 0 20px;
+  border: 0;
+  border-radius: 40px;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: var(--white);
+  font: 500 14px var(--font-body);
+  cursor: pointer;
+}
+.pill svg { width: 24px; height: 24px; }
+
+/* Close button (Figma "Feature: Top bar", Exit) */
+.close {
+  position: absolute;
+  top: calc(14px + env(safe-area-inset-top));
+  right: 14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: var(--white);
+  cursor: pointer;
+}
+.close[hidden] { display: none; }
+.close[data-tone="dark"] { background: rgba(0, 0, 0, 0.08); color: var(--ink); }
+.close svg { width: 18px; height: 18px; }
+
+.choices { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 8px; }
+.choices .pill { margin-top: 0; min-width: 220px; justify-content: center; padding: 0 20px; }
+.choices .pill:active { background: rgba(119, 148, 255, 0.45); }
 
 /* Glass orb on start / end */
 .orb {
   position: relative;
   width: min(44vw, 220px);
   aspect-ratio: 1;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 30%, #a9d6d9, var(--blue) 58%, var(--blue-deep));
-  box-shadow: inset -18px -12px 36px rgba(255, 255, 255, 0.55), 0 24px 48px rgba(36, 80, 138, 0.25);
+  background: radial-gradient(circle at 32% 30%, #dfe6ff, var(--blue) 55%, var(--navy));
+  box-shadow: inset -18px -12px 36px rgba(255, 255, 255, 0.35), 0 24px 60px rgba(119, 148, 255, 0.35);
   animation: float 6s ease-in-out infinite;
 }
 .orb::after {
@@ -147,13 +277,13 @@ html, body {
 .fx-sky {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, #0b1c3a, #1d3f70 55%, #4a6fa0);
+  background: linear-gradient(to bottom, #0b1020, #1d2440 55%, #3a4570);
 }
 .fx-daylight {
   position: absolute;
   inset: 0;
   opacity: 0;
-  background: linear-gradient(to bottom, #cfe3ec, #eef4f7 60%, #ffffff);
+  background: linear-gradient(to bottom, #d7e0ff, #eef2ff 60%, #ffffff);
   transition: opacity 2.6s var(--ease-out);
 }
 .fx-sun {
@@ -164,8 +294,8 @@ html, body {
   aspect-ratio: 1;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, #ffffff 55%, #f2f7fa);
-  box-shadow: 0 0 40px 12px rgba(255, 255, 255, 0.9), 0 0 140px 60px rgba(190, 224, 228, 0.6);
+  background: radial-gradient(circle, #ffffff 55%, #eef2ff);
+  box-shadow: 0 0 40px 12px rgba(255, 255, 255, 0.9), 0 0 140px 60px rgba(174, 196, 255, 0.6);
   transition: top 2.6s var(--ease-out);
 }
 .fx-ground {
@@ -174,8 +304,8 @@ html, body {
   right: 0;
   bottom: 0;
   height: 12%;
-  border-top: 1px solid rgba(255, 255, 255, 0.9);
-  background: linear-gradient(to bottom, #3a4670, #1e2a4a);
+  border-top: 1px solid var(--glass-line);
+  background: linear-gradient(to bottom, var(--navy), var(--bg-bottom));
 }
 
 /* ---------- FX: stack (RAM) ---------- */
@@ -193,13 +323,13 @@ html, body {
   height: min(10vw, 60px);
   border-radius: 50%;
   border: 1px solid var(--glass-line);
-  background: linear-gradient(165deg, rgba(255, 255, 255, 0.95), var(--lavender) 55%, #8b92c2);
-  box-shadow: 0 8px 18px rgba(36, 80, 138, 0.22), inset 0 2px 4px rgba(255, 255, 255, 0.9);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.4), rgba(174, 196, 255, 0.18) 55%, rgba(119, 148, 255, 0.3));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
   opacity: 0;
   transform: translateY(-90vh) rotate(var(--tilt));
   transition: transform 0.9s cubic-bezier(0.34, 1.3, 0.64, 1) var(--delay), opacity 0.3s var(--delay);
 }
-.fx-disc:nth-child(even) { background: linear-gradient(165deg, rgba(255, 255, 255, 0.9), var(--teal) 50%, var(--blue)); }
+.fx-disc:nth-child(even) { background: linear-gradient(165deg, rgba(174, 196, 255, 0.55), rgba(119, 148, 255, 0.35) 50%, rgba(122, 168, 224, 0.25)); }
 .fx-disc.is-on { opacity: 1; transform: translateY(0) rotate(var(--tilt)); }
 .fx-pedestal {
   position: absolute;
@@ -209,8 +339,8 @@ html, body {
   aspect-ratio: 1;
   border-radius: 50%;
   transform: translateX(-50%);
-  background: radial-gradient(circle at 50% 20%, #ffffff, #d9dde8 60%);
-  box-shadow: 0 -6px 30px rgba(255, 255, 255, 0.6);
+  background: radial-gradient(circle at 50% 20%, #4a5378, var(--bg-mid) 60%);
+  box-shadow: 0 -6px 40px rgba(119, 148, 255, 0.35);
 }
 
 /* ---------- FX: charge (battery) ---------- */
@@ -221,8 +351,8 @@ html, body {
   bottom: 0;
   height: 0;
   overflow: hidden;
-  background: linear-gradient(to top, var(--blue-deep), var(--blue) 60%, var(--teal));
-  box-shadow: 0 -1px 0 var(--glass-line), 0 -10px 36px rgba(140, 192, 196, 0.55);
+  background: linear-gradient(to top, #5f7ef0, #8fa9ff 60%, #c3d3ff);
+  box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.8), 0 -12px 40px rgba(119, 148, 255, 0.6);
   transition: height 2.6s cubic-bezier(0.45, 0, 0.25, 1);
 }
 /* Soft light that sweeps upward while charging */
@@ -232,7 +362,7 @@ html, body {
   left: 0;
   right: 0;
   height: 40%;
-  background: linear-gradient(to top, transparent, rgba(255, 255, 255, 0.28), transparent);
+  background: linear-gradient(to top, transparent, rgba(255, 255, 255, 0.35), transparent);
   animation: charge 2.8s ease-in-out infinite;
 }
 
@@ -244,7 +374,7 @@ html, body {
   bottom: 0;
   height: 0;
   overflow: hidden;
-  background: linear-gradient(to top, #0e2650, var(--blue-deep) 60%, #2f5f98);
+  background: linear-gradient(to top, #11142a, #1f2547 60%, #2d3560);
   transition: height 1.2s cubic-bezier(0.55, 0, 0.1, 1);
 }
 .fx-streak {
@@ -253,7 +383,7 @@ html, body {
   width: var(--w);
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.95));
+  background: linear-gradient(to right, transparent, #cfdaff);
   /* Starts slow, then snaps fast */
   animation: streak var(--d) cubic-bezier(0.85, 0, 0.95, 0.25) var(--delay) infinite;
 }
@@ -266,9 +396,9 @@ html, body {
   width: 6%;
   height: 4%;
   transform: translate(-50%, -50%);
-  border: 1px solid rgba(255, 255, 255, 0.95);
-  background: linear-gradient(150deg, var(--blue), var(--blue-deep));
-  box-shadow: 0 20px 60px rgba(36, 80, 138, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: linear-gradient(150deg, var(--blue-light), var(--blue) 60%, var(--blue-sky));
+  box-shadow: 0 20px 80px rgba(119, 148, 255, 0.45);
   transition: width 1.6s cubic-bezier(0.65, 0, 0.35, 1), height 1.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
 .fx-handle {
@@ -288,7 +418,7 @@ html, body {
 .fx-night {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, #0b1c3a, #16305a);
+  background: linear-gradient(to bottom, #0b1020, #1a1f36);
 }
 .fx-slab {
   position: absolute;
@@ -297,8 +427,8 @@ html, body {
   top: 50%;
   height: 100%;
   transform: translateY(-50%);
-  background: linear-gradient(to bottom, #ffffff, #dfe7f0);
-  box-shadow: 0 0 40px rgba(190, 224, 228, 0.6);
+  background: linear-gradient(to bottom, #ffffff, #dfe6ff);
+  box-shadow: 0 0 40px rgba(174, 196, 255, 0.6);
   transition: height 1.8s cubic-bezier(0.7, 0, 0.2, 1);
 }
 
@@ -312,19 +442,19 @@ html, body {
 }
 .fx-item {
   position: absolute;
-  border: 1px solid var(--glass-line);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 6px;
-  box-shadow: 0 6px 14px rgba(36, 80, 138, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
-.fx-item--box   { background: linear-gradient(160deg, #ffffff, var(--lavender)); }
-.fx-item--crate { background: linear-gradient(160deg, var(--teal), var(--blue)); }
-.fx-item--slab  { background: linear-gradient(160deg, #c7cce4, #8b92c2); border-radius: 4px; }
-.fx-item--pill  { background: linear-gradient(160deg, #ffffff, var(--teal)); border-radius: 999px; }
-.fx-item--ball  { background: radial-gradient(circle at 32% 30%, #a9d6d9, var(--blue) 60%, var(--blue-deep)); border-radius: 50%; }
+.fx-item--box   { background: linear-gradient(160deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.08)); }
+.fx-item--crate { background: linear-gradient(160deg, var(--blue), #4c5fb8); }
+.fx-item--slab  { background: linear-gradient(160deg, var(--grey-blue), #4c637f); border-radius: 4px; }
+.fx-item--pill  { background: linear-gradient(160deg, #bec5d8, var(--blue-sky)); border-radius: 999px; }
+.fx-item--ball  { background: radial-gradient(circle at 32% 30%, #dfe6ff, var(--blue) 55%, #3a4a9a); border-radius: 50%; }
 
 /* ---------- Keyframes ---------- */
-@keyframes pulse { 50% { opacity: 0.4; } }
 @keyframes float { 50% { transform: translateY(-12px); } }
+@keyframes glow { 50% { opacity: 0.55; transform: scale(0.88); } }
 @keyframes charge {
   from { top: 100%; }
   to { top: -40%; }

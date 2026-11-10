@@ -13,7 +13,7 @@ python3 -m http.server 8000
 - http://localhost:8000 — auto-detect (falls back to a device picker)
 - http://localhost:8000/?device=s23 or `?device=s26` — force a device
 
-Tap anywhere to advance.
+The page opens on a two-step guide (swipe or tap the dots). Start Compare shows the first spec; tap anywhere to advance. The close button and the end screen return to the guide.
 
 ## How it works
 

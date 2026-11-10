@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-11-10 (2)
+- Added the pre-experience guide from Figma "UX Orion EX App" (node 1007:15568), replacing the "Tap to start" screen.
+  - `index.html` / `style.css`: "Compare S26 Series" title, two swipeable slides (phone outline with sun + horizon; two phones side by side) with captions, indicator dots, and a Start Compare button. Light gradient background.
+  - `script.js`: Start Compare goes straight to Peak Brightness (1 / 7). The close button and "Tap to restart" return to the guide. Dots follow the swipe; they are also clickable, and ← / → keys work. Taps on the guide no longer advance the specs.
+  - `assets/` (new): `guide-phone.png`, `guide-hands.png` (downscaled to 640px), `guide-glow.svg`, `guide-line.svg`, exported from Figma.
+  - Removed: the start screen (`#start`, device name + "Tap to start"), and the Figma status bar (the real device has its own).
+
+## 2026-11-10
+- Restyled to the Figma "Seowhan Ideation" feature screens (node 387:15261). Structure, animations, spec values and detection unchanged.
+- `style.css`: replaced the light lavender theme with a dark navy base (radial top glow, no film grain); Samsung Sharp Sans Bold titles/numerals (`--font-display`, mapped via `local()` where installed; fonts not bundled) and One UI Sans body (`--font-body`); blue gradient numerals (#7794FF → #AEC4FF → #7AA8E0); Figma pill button and 36px close button; all seven fx recolored to blue / lavender / glass on dark.
+- `index.html`: start / end hint text → pill buttons with arrow-circle icon; added close button (back to start); theme color #22263a.
+- `script.js`: text tone defaults to light on the dark theme (dark only over bright visuals); `plain` option drops gradient numerals over busy visuals (brightness night, storage); close button handler; picker buttons use the pill style.
+- Comparison elements from the Figma compare sheet (Compare with, "thinner than …") intentionally not used.
+
 ## 2026-11-04 (4)
 - Layout: text centered; visuals fill the whole screen behind it.
 - Dual-tone text (`index.html` `#inkBase` / `#inkOverlay`, `applyInk` in `script.js`): the same text is drawn twice and the opposite-colored copy is clipped to the visual's area, so text flips white/dark exactly at the visual's edge. Removed the text halo.
