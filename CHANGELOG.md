@@ -1,5 +1,8 @@
 # Changelog
 
+## 2026-11-10 (4)
+- PWA: `manifest.webmanifest` `display` standalone → fullscreen, so the installed app hides the status bar and the bottom system navigation bar (an edge swipe still reveals them briefly). `sw.js` `CACHE` bumped to `galaxy-specs-v2`. An already-installed app may need to be removed and installed again to pick up the new display mode.
+
 ## 2026-11-10 (3)
 - Guide illustrations replaced with two equal-size 540x480 frames (`Frame 2147241148` → step 1 phone, `Frame 2147241147` → step 2 two phones), so slides keep the same footprint. `.guide-frame` scales by width and remaining height; the sun glow is overlaid on the phone in frame percentages. Removed `assets/guide-line.svg` (the horizon is now part of the image).
 - PWA: added `manifest.webmanifest` (standalone, portrait), `sw.js` (cache-first with background refresh, works offline), `icons/` (192, 512, apple-touch 180; placeholder blue-orb art), manifest/meta links in `index.html`, service worker registration in `script.js`. `theme-color` follows the screen (light guide, dark otherwise).

@@ -1,6 +1,6 @@
 // Cache-first with background refresh: the app opens instantly and works offline,
 // and a new deploy shows up on the next open. Bump CACHE to drop old files at once.
-const CACHE = 'galaxy-specs-v1';
+const CACHE = 'galaxy-specs-v2';
 const SHELL = [
   './',
   'index.html',

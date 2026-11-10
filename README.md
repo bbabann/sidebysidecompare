@@ -17,7 +17,7 @@ The page opens on a two-step guide (swipe or tap the dots). Start Compare shows 
 
 ## Install (PWA)
 
-Open the Pages URL on the phone, then Chrome menu → "Add to Home screen" / "Install app" (Samsung Internet: menu → "Add page to" → "Home screen"). Needs HTTPS, so it does not install from a LAN `http://` address. Once opened, the app files are cached and it works offline; a new deploy shows up the next time it opens. Bump `CACHE` in `sw.js` to force old files out.
+Open the Pages URL on the phone, then Chrome menu → "Add to Home screen" / "Install app" (Samsung Internet: menu → "Add page to" → "Home screen"). Needs HTTPS, so it does not install from a LAN `http://` address. Once opened, the app files are cached and it works offline; a new deploy shows up the next time it opens. Bump `CACHE` in `sw.js` to force old files out. The installed app runs fullscreen (no status bar or system navigation bar; an edge swipe shows them briefly); after changing `display` in the manifest, remove and re-install the app to pick it up.
 
 ## How it works
 
