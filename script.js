@@ -212,8 +212,12 @@ const FX = {
   },
 };
 
+// Browser / status bar color follows the screen: light guide, dark everything else.
+const themeColor = document.querySelector('meta[name="theme-color"]');
+
 const render = () => {
   fxRoot.innerHTML = '';
+  themeColor.content = step < 0 ? '#eff9fc' : '#22263a';
   $('close').hidden = step < 0;
   if (step < 0) {
     show('guide');
@@ -323,3 +327,8 @@ $('close').addEventListener('click', (e) => {
 });
 
 detect().then((id) => (id ? start(id) : showPicker()));
+
+// Offline + installable (PWA). Needs HTTPS or localhost.
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => { /* app still works online */ });
+}

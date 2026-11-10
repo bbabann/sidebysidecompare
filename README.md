@@ -15,6 +15,10 @@ python3 -m http.server 8000
 
 The page opens on a two-step guide (swipe or tap the dots). Start Compare shows the first spec; tap anywhere to advance. The close button and the end screen return to the guide.
 
+## Install (PWA)
+
+Open the Pages URL on the phone, then Chrome menu → "Add to Home screen" / "Install app" (Samsung Internet: menu → "Add page to" → "Home screen"). Needs HTTPS, so it does not install from a LAN `http://` address. Once opened, the app files are cached and it works offline; a new deploy shows up the next time it opens. Bump `CACHE` in `sw.js` to force old files out.
+
 ## How it works
 
 - `specs.js` — `SCALES` (fixed min/max per spec, shared by all devices) and `DEVICES` (model-code prefixes + values). Add a device by adding an entry; no other code changes.

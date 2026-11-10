@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-11-10 (3)
+- Guide illustrations replaced with two equal-size 540x480 frames (`Frame 2147241148` → step 1 phone, `Frame 2147241147` → step 2 two phones), so slides keep the same footprint. `.guide-frame` scales by width and remaining height; the sun glow is overlaid on the phone in frame percentages. Removed `assets/guide-line.svg` (the horizon is now part of the image).
+- PWA: added `manifest.webmanifest` (standalone, portrait), `sw.js` (cache-first with background refresh, works offline), `icons/` (192, 512, apple-touch 180; placeholder blue-orb art), manifest/meta links in `index.html`, service worker registration in `script.js`. `theme-color` follows the screen (light guide, dark otherwise).
+
 ## 2026-11-10 (2)
 - Added the pre-experience guide from Figma "UX Orion EX App" (node 1007:15568), replacing the "Tap to start" screen.
   - `index.html` / `style.css`: "Compare S26 Series" title, two swipeable slides (phone outline with sun + horizon; two phones side by side) with captions, indicator dots, and a Start Compare button. Light gradient background.

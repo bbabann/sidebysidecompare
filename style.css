@@ -164,13 +164,11 @@ html, body {
   padding: 24px 0;
   container-type: size; /* lets the illustration scale to the height that is left */
 }
-/* Phone outline with the sun and horizon drawn over it; offsets are the Figma
-   positions inside the 210x316 phone box, as percentages so the box can scale. */
-.guide-phone-box { position: relative; height: min(316px, 100cqh); aspect-ratio: 210 / 316; }
-.guide-phone { width: 100%; height: 100%; object-fit: contain; }
-.guide-glow { position: absolute; left: 30.5%; top: 24.7%; width: 38.1%; animation: glow 3.2s ease-in-out infinite; }
-.guide-line { position: absolute; left: 24.3%; top: 74.7%; width: 50.5%; }
-.guide-hands { width: min(84vw, 303px); max-height: 100cqh; object-fit: contain; }
+/* Both illustrations are 540x480 frames, so the two slides keep the same footprint.
+   The sun glow is positioned over the phone in frame percentages. */
+.guide-frame { position: relative; width: min(100cqw, 540px, calc(100cqh * 540 / 480)); aspect-ratio: 540 / 480; }
+.guide-frame > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.guide-frame > .guide-glow { position: absolute; left: 38.7%; top: 25%; width: 22.6%; height: auto; animation: glow 3.2s ease-in-out infinite; }
 .guide-caption {
   min-height: 38px;
   font-size: 14px;
